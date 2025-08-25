@@ -1,0 +1,25 @@
+name: Unzip and Deploy Game
+on:
+  push:
+    paths:
+      - '**/*.zip'
+  workflow_dispatch:
+
+jobs:
+  unzip:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Unzip Game ZIP
+        run: |
+          unzip gioco.zip -d game_extract
+          rm gioco.zip
+          mv game_extract/* .
+          rm -rf game_extract
+      - name: Commit extracted files
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git add .
+          git commit -m "Extract game files from ZIP"
+          git push origin HEAD:main
